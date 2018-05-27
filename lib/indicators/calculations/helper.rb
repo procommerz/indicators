@@ -72,8 +72,13 @@ end
 module Enumerable
 
   unless method_defined?(:sum)
-    def sum
-      return self.inject(0){|accum, i| accum + i }
+    # Borrowed from activesupport-4.2.10/lib/active_support/core_ext/enumerable.rb
+    def sum(identity = 0, &block)
+      if block_given?
+        map(&block).sum(identity)
+      else
+        inject { |sum, element| sum + element } || identity
+      end
     end
   end  
 
